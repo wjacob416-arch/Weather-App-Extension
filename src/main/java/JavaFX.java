@@ -139,7 +139,7 @@ public class JavaFX extends Application {
 			threeDayLayout.setSpacing(10); // Adjust spacing between items if needed
 			threeDayLayout.setStyle("-fx-background-color: #B0E0E6;"); // Set background color for the VBox
 			for(int i = 0; i < 3;i++){
-				String dayForecast = "Day " + (i + 1) + ": " + forecast.get(i).shortForecast
+				String dayForecast = "Days " + (i + 1) + ": " + forecast.get(i).shortForecast
 						+ ", Temp: " + forecast.get(i).temperature;
 				Label forecastLabel = new Label(dayForecast);
 				forecastLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
