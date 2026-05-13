@@ -1,15 +1,22 @@
 # Chicago Weather App
 
-A JavaFX desktop application that displays live weather data for Chicago using the National Weather Service (NWS) API and the Sunrise-Sunset API. Built for CS 342 Software Design at UIC.
+A JavaFX desktop application that fetches and displays live weather data for Chicago. Built for CS 342 Software Design at UIC.
+
+---
 
 ## Features
 
-- **7-day forecast** — daily conditions and high temperatures pulled from the NWS grid API
-- **Current conditions** — today's short forecast and temperature shown in the header
-- **Precipitation chance** — today's probability of precipitation
-- **Sunrise & sunset times** — real astronomical times from the Sunrise-Sunset API, converted to local time
-- **Wind data** — wind speed and direction with a rotating compass graphic
-- **Temperature converter** — convert between Fahrenheit and Celsius
+| Feature | Details |
+|---------|---------|
+| 7-Day Forecast | Daily conditions and temperatures from the NWS grid API |
+| Current Conditions | Today's temperature and short forecast shown in the header |
+| Precipitation Chance | Today's probability of precipitation |
+| Sunrise & Sunset | Real astronomical times, converted to local timezone |
+| Wind Data | Speed and direction with a rotating compass graphic |
+| Temperature Converter | Interactive F ↔ C converter in a pop-up window |
+| Forecast Caching | Responses are cached so repeated lookups skip the network |
+
+---
 
 ## Requirements
 
@@ -17,37 +24,64 @@ A JavaFX desktop application that displays live weather data for Chicago using t
 - Maven 3.6+
 - Internet connection (live API calls on startup)
 
-## Building and Running
+---
+
+## Running the App
 
 ```bash
 mvn clean javafx:run
 ```
 
+---
+
+## Running the Tests
+
+```bash
+mvn test
+```
+
+The test suite covers:
+- **JSON deserialization** — `WeatherAPI.getObject()` parses NWS API responses correctly
+- **Temperature conversion** — F→C and C→F formulas (freezing, boiling, body temp, round-trip)
+- **Wind direction mapping** — all 8 compass directions map to the correct rotation angle
+- **Caching** — `MyWeatherAPI` returns cached data and isolates keys by region/grid
+
+---
+
 ## Project Structure
 
 ```
-src/main/java/
-├── JavaFX.java              # Main application entry point and UI
-├── MyWeatherAPI.java        # (legacy) weather API helper
-└── weather/
-    ├── WeatherAPI.java      # NWS forecast + Sunrise-Sunset API calls
-    ├── Period.java          # Forecast period data model
-    ├── SunriseSunsetResult.java  # Sunrise-Sunset API response model
-    ├── Root.java            # NWS API response root
-    ├── Properties.java      # NWS API properties wrapper
-    ├── ProbabilityOfPrecipitation.java
-    ├── Elevation.java
-    └── Geometry.java
-src/main/resources/
-└── styles.css               # Application stylesheet
+src/
+├── main/
+│   ├── java/
+│   │   ├── JavaFX.java              # Application entry point and all UI logic
+│   │   ├── MyWeatherAPI.java        # Caching wrapper around WeatherAPI
+│   │   └── weather/
+│   │       ├── WeatherAPI.java      # HTTP calls to NWS and Sunrise-Sunset APIs
+│   │       ├── Period.java          # Single forecast period (temp, wind, etc.)
+│   │       ├── Root.java            # NWS API root response model
+│   │       ├── Properties.java      # NWS properties wrapper (holds periods list)
+│   │       ├── SunriseSunsetResult.java
+│   │       ├── ProbabilityOfPrecipitation.java
+│   │       ├── Elevation.java
+│   │       └── Geometry.java
+│   └── resources/
+│       └── styles.css               # Dark-theme stylesheet
+└── test/
+    └── java/
+        └── MyTest.java              # JUnit 5 test suite (29 tests)
 ```
+
+---
 
 ## APIs Used
 
-| API | Purpose |
-|-----|---------|
-| [api.weather.gov](https://www.weather.gov/documentation/services-web-api) | 7-day forecast, wind, precipitation |
-| [api.sunrise-sunset.org](https://sunrise-sunset.org/api) | Sunrise and sunset times |
+| API | Endpoint | Used For |
+|-----|----------|----------|
+| National Weather Service | `api.weather.gov/gridpoints/LOT/77,70/forecast` | 7-day forecast, wind, precipitation |
+| Sunrise-Sunset | `api.sunrise-sunset.org/json` | Sunrise and sunset times for Chicago |
+
+---
 
 ## Dependencies
 
@@ -55,5 +89,5 @@ src/main/resources/
 |------------|---------|---------|
 | JavaFX Controls | 19.0.2.1 | UI framework |
 | JavaFX FXML | 19.0.2.1 | FXML support |
-| Jackson Databind | 2.11.3 | JSON parsing |
-| JUnit Jupiter | 5.9.1 | Testing |
+| Jackson Databind | 2.11.3 | JSON deserialization |
+| JUnit Jupiter | 5.9.1 | Unit testing |
