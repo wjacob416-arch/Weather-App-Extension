@@ -4,6 +4,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,6 +32,29 @@ public class WeatherAPI {
         }
         return r.properties.periods;
     }
+    public static String[] getSunriseSunset(double lat, double lng) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.sunrise-sunset.org/json?lat=" + lat + "&lng=" + lng + "&formatted=0"))
+                .header("User-Agent", "ChicagoWeatherApp/1.0")
+                .build();
+        try {
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Sunrise API response: " + response.body());
+            ObjectMapper om = new ObjectMapper();
+            SunriseSunsetResult result = om.readValue(response.body(), SunriseSunsetResult.class);
+            if (result == null || !"OK".equals(result.status)) return null;
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("h:mm a");
+            String sunrise = OffsetDateTime.parse(result.results.sunrise)
+                    .atZoneSameInstant(ZoneId.systemDefault()).format(fmt);
+            String sunset = OffsetDateTime.parse(result.results.sunset)
+                    .atZoneSameInstant(ZoneId.systemDefault()).format(fmt);
+            return new String[]{sunrise, sunset};
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static Root getObject(String json){
         ObjectMapper om = new ObjectMapper();
         Root toRet = null;

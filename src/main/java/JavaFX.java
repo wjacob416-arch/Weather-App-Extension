@@ -1,31 +1,24 @@
 import com.sun.javafx.stage.EmbeddedWindow;
 import javafx.application.Application;
-
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button; //added
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.skin.TableHeaderRow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import weather.Period;
 import weather.WeatherAPI;
-import javafx.scene.layout.HBox;
 import java.util.ArrayList;
-
-import java.text.SimpleDateFormat; // added
-
-import javafx.geometry.Pos;
-
-
-
-import javafx.scene.image.Image;// added
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-
-import javafx.scene.layout.BorderPane;
 
 
 
@@ -57,110 +50,86 @@ public class JavaFX extends Application {
 		temperature.setText("Today's weather is: "+String.valueOf(forecast.get(0).temperature));
 		weather.setText(forecast.get(0).shortForecast);
 
-		Label weatherLabel = new Label( "Chicago");
-		weatherLabel.setFont(Font.font("Arial", 40)); // Customize the font size
-		weatherLabel.setStyle("-fx-font-size: 40px; -fx-padding: 10px; -fx-font-weight: bold;");
+		Label weatherLabel = new Label("Chicago");
+		weatherLabel.getStyleClass().add("title-label");
 
 		Label tempForecastLabel = new Label(forecast.get(0).temperature + ": " + forecast.get(0).shortForecast);
-		tempForecastLabel.setFont(Font.font("Arial", 40)); // Customize the font size
-		tempForecastLabel.setStyle("-fx-font-size: 40px; -fx-padding: 10px; -fx-font-weight: bold;");
-
-
+		tempForecastLabel.getStyleClass().add("subtitle-label");
 
 		Label welcomeLabel = new Label("Welcome to the Chicago Weather App");
-		welcomeLabel.setFont(Font.font("Arial", 30));  // Set font size
-		welcomeLabel.setTextFill(Color.WHITE);  // Set text color
-		welcomeLabel.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+		welcomeLabel.getStyleClass().add("headline-label");
 
-		VBox headerContainer = new VBox(10, welcomeLabel, weatherLabel);
+		VBox headerContainer = new VBox(8, welcomeLabel, weatherLabel, tempForecastLabel);
 		headerContainer.setAlignment(Pos.CENTER);
+		headerContainer.getStyleClass().add("header");
 
-		// Create a container to center the label
-		VBox weatherLabelContainer = new VBox(10,headerContainer,tempForecastLabel);
-		weatherLabelContainer.setAlignment(Pos.CENTER); // Center the label within VBox
+		VBox weatherLabelContainer = new VBox(headerContainer);
+		weatherLabelContainer.setAlignment(Pos.CENTER);
 
 		VBox SevenDayLayout = new VBox();
-		SevenDayLayout.setSpacing(5);
+		SevenDayLayout.setSpacing(8);
+		SevenDayLayout.getStyleClass().add("forecast-list");
 
-		for(int i = 0; i < 7;i++){
+		for (int i = 0; i < 7; i++) {
 			String dayForecast = "Day " + (i + 1) + ": " + forecast.get(i).shortForecast
 					+ ", Temp: " + forecast.get(i).temperature;
 			Label forecastLabel = new Label(dayForecast);
-			forecastLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
-
-			String bgColor = (i % 2 == 0) ? "#add8e6" : "#ffffff";
-			forecastLabel.setStyle("-fx-font-size: 14px; -fx-padding: 10px; -fx-background-color: " + bgColor + ";");
-
+			forecastLabel.getStyleClass().add("forecast-item");
 			SevenDayLayout.getChildren().add(forecastLabel);
-
 		}
 
-		SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
-		String startTimeStr, endTimeStr;
-		if(forecast.get(0).isDaytime){
-			startTimeStr = timeFormat.format(forecast.get(0).startTime);
-			endTimeStr = timeFormat.format(forecast.get(0).endTime);
-		}
-		else{
-			startTimeStr = timeFormat.format(forecast.get(1).startTime);
-			endTimeStr = timeFormat.format(forecast.get(1).endTime);
-		}
-		Label sunriseLabel = new Label("Sunrise: " + startTimeStr);
-		sunriseLabel.setFont(Font.font("Arial", 16));
-		sunriseLabel.setTextFill(Color.BLACK);  // Set text color
-		sunriseLabel.setStyle("-fx-background-color: lightyellow; -fx-padding: 10px; -fx-font-size: 16px;");
+		String[] sunTimes = WeatherAPI.getSunriseSunset(41.85, -87.65);
+		String sunriseStr = (sunTimes != null) ? sunTimes[0] : "N/A";
+		String sunsetStr  = (sunTimes != null) ? sunTimes[1] : "N/A";
 
+		Label sunriseLabel = new Label("Sunrise: " + sunriseStr);
+		sunriseLabel.getStyleClass().add("stat-label");
 
-		Label sunsetLabel = new Label("Sunset: " + endTimeStr);
-		sunsetLabel.setFont(Font.font("Arial", 16));
-		sunsetLabel.setTextFill(Color.BLACK);  // Set text color
-		sunsetLabel.setStyle("-fx-background-color: lightyellow; -fx-padding: 10px; -fx-font-size: 16px;");
-
+		Label sunsetLabel = new Label("Sunset: " + sunsetStr);
+		sunsetLabel.getStyleClass().add("stat-label");
 
 		int precipitationChance = forecast.get(0).probabilityOfPrecipitation.value;
 		Label precipitationLabel = new Label("Today's Precipitation Chance: " + precipitationChance + "%");
-		precipitationLabel.setFont(Font.font("Arial", 16));
-		precipitationLabel.setTextFill(Color.BLACK);  // Set text color
-		precipitationLabel.setStyle("-fx-background-color: lightblue; -fx-padding: 10px; -fx-font-size: 16px;");
-//
+		precipitationLabel.getStyleClass().add("stat-label");
 
-		VBox weatherLayout = new VBox(10, SevenDayLayout, precipitationLabel,sunriseLabel,sunsetLabel);
+		VBox weatherLayout = new VBox(12, SevenDayLayout, precipitationLabel, sunriseLabel, sunsetLabel);
+		weatherLayout.getStyleClass().add("card");
 
 
 
 		threeDayButton = new Button("3-Day Data");
-		threeDayButton.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-color: #FFD700; -fx-text-fill: #000000; -fx-border-radius: 5px;");
-		threeDayButton.setOnAction(e -> {
-			showThreeDayData(forecast);
-		});
+		threeDayButton.getStyleClass().addAll("button", "button-gold");
+		threeDayButton.setOnAction(e -> showThreeDayData(forecast));
 
 		WindButton = new Button("Search Wind Data");
-		WindButton.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-color: #1E90FF; -fx-text-fill: #000000; -fx-border-radius: 5px;");
-		WindButton.setOnAction(e -> {
-			showWindSpeedScene(forecast);
-		});
-		FCconvert = new Button("Temperature Convert");
-		FCconvert.setStyle("-fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-color: #32CD32; -fx-text-fill: #000000; -fx-border-radius: 5px;");
-		FCconvert.setOnAction(e -> {
-			ShowTemperatureConversion();
-		});
+		WindButton.getStyleClass().addAll("button", "button-blue");
+		WindButton.setOnAction(e -> showWindSpeedScene(forecast));
 
-		// Button container
+		FCconvert = new Button("Temperature Convert");
+		FCconvert.getStyleClass().addAll("button", "button-green");
+		FCconvert.setOnAction(e -> ShowTemperatureConversion());
+
 		buttonContainer = new HBox(15, threeDayButton, WindButton, FCconvert);
 		buttonContainer.setAlignment(Pos.CENTER);
-		buttonContainer.setStyle("-fx-padding: 10px;");
+		buttonContainer.setPadding(new Insets(16, 0, 20, 0));
+		buttonContainer.getStyleClass().addAll("button-container", "button-panel");
 
 
-		VBox layout = new VBox(10,weatherLabelContainer,weatherLayout);
-		layout.setStyle("-fx-background-color: blue;");
+		VBox layout = new VBox(18, weatherLabelContainer, weatherLayout, buttonContainer);
+		layout.setAlignment(Pos.TOP_CENTER);
+		layout.setPadding(new Insets(10));
 
+		ScrollPane scrollPane = new ScrollPane(layout);
+		scrollPane.setFitToWidth(true);
+		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
 
 		BorderPane rootLayout = new BorderPane();
-		rootLayout.setCenter(layout);
-		rootLayout.setBottom(buttonContainer); // Place buttons at the bottom
+		rootLayout.setCenter(scrollPane);
+		rootLayout.setPadding(new Insets(15));
 
-
-		scene = new Scene(rootLayout, 700, 700);
+		scene = new Scene(rootLayout, 820, 760);
+		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}

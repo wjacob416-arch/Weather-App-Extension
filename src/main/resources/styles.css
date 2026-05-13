@@ -1,0 +1,95 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #18273d, #2f4f7f);
+}
+
+.header {
+    -fx-alignment: center;
+    -fx-padding: 20 0 25 0;
+}
+
+.title-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
+.headline-label {
+    -fx-text-fill: #e3e9ff;
+    -fx-font-size: 20px;
+    -fx-opacity: 0.95;
+}
+
+.subtitle-label {
+    -fx-text-fill: #f8f8ff;
+    -fx-font-size: 18px;
+    -fx-font-weight: 600;
+}
+
+.card {
+    -fx-background-color: rgba(255, 255, 255, 0.18);
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.24), 20, 0, 0, 6);
+}
+
+.forecast-list {
+    -fx-spacing: 10;
+    -fx-padding: 5 0 0 0;
+}
+
+.forecast-item {
+    -fx-background-color: rgba(255, 255, 255, 0.85);
+    -fx-background-radius: 12;
+    -fx-padding: 12 16;
+    -fx-font-size: 15px;
+    -fx-text-fill: #0c2043;
+}
+
+.stat-label {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-background-radius: 12;
+    -fx-padding: 12 16;
+    -fx-font-size: 15px;
+    -fx-text-fill: #112240;
+}
+
+.button-container {
+    -fx-padding: 0;
+}
+
+.button-panel {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+    -fx-background-radius: 18;
+    -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.18), 16, 0, 0, 4);
+}
+
+.button {
+    -fx-background-radius: 10;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding: 12 24;
+    -fx-cursor: hand;
+}
+
+.button-gold {
+    -fx-background-color: #f4b400;
+}
+
+.button-blue {
+    -fx-background-color: #4d8cff;
+}
+
+.button-green {
+    -fx-background-color: #34b27d;
+}
+
+.button:hover {
+    -fx-opacity: 0.92;
+}
+
+.button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
